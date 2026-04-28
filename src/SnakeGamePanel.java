@@ -192,8 +192,9 @@ public class SnakeGamePanel extends JPanel implements ActionListener
 
     private void check_if_edge_collision()
     {
-        if (snake.getFirst().x > game_scale || snake.getFirst().x < 0 ||
-                snake.getFirst().y > game_scale || snake.getFirst().y < 0)
+        Point snake_head = snake.getFirst();
+        if (snake_head.x >= game_scale || snake_head.x < 0 ||
+                snake_head.y >= game_scale || snake_head.y < 0)
             game_running = false;
     }
 
