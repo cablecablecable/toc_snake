@@ -26,7 +26,7 @@ public class SnakeGamePanel extends JPanel implements ActionListener
     List<Point> apples;
     Timer timer;
     Point old_snake_tail;
-    JButton button = new JButton("PlAY AGAIN");
+    JButton button = new JButton("PLAY AGAIN");
 
     public SnakeGamePanel(int width, int height, int game_scale)
     {
