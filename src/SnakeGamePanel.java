@@ -20,15 +20,17 @@ public class SnakeGamePanel extends JPanel implements ActionListener
     int apples_eaten;
     int max_apples = 5;
     boolean game_running;
-    final int update_delay = 200;
+    final int update_delay;
+    String username;
 
     Deque<Point> snake;
     List<Point> apples;
     Timer timer;
     Point old_snake_tail;
     JButton button = new JButton("PLAY AGAIN");
+    Leaderboard leaderboard = null;
 
-    public SnakeGamePanel(int width, int height, int game_scale)
+    public SnakeGamePanel(int width, int height, int game_scale, int game_speed, String username)
     {
         this.setPreferredSize(new Dimension(width, height));
         this.setFocusable(true);
@@ -37,6 +39,9 @@ public class SnakeGamePanel extends JPanel implements ActionListener
         this.setLayout(null);
         this.screen_width = width;
         this.screen_height = height;
+        this.update_delay = game_speed;
+        this.username = username;
+
         button.setVisible(false);
         this.add(button);
         button.setBounds(width / 3, (height / 2) + 100, 300, 100);
@@ -45,10 +50,10 @@ public class SnakeGamePanel extends JPanel implements ActionListener
             snake_direction = 'L';
             apples_eaten = 0;
             button.setVisible(false);
+            leaderboard.dispose();
+            leaderboard = null;
             start_game();
         });
-
-
 
         this.game_scale = game_scale;
         this.game_unit = width / game_scale; // width and height of each square in the game
@@ -124,14 +129,14 @@ public class SnakeGamePanel extends JPanel implements ActionListener
                 if (current_point.equals(snake.getFirst()))
                 {
                     g.setColor(new Color(61, 112, 48));
-                    g.fillRect(x * game_unit, y * game_unit, game_unit, game_unit);
+                    g.fillRoundRect(x * game_unit, y * game_unit, game_unit, game_unit, 30, 30);
                     continue;
                 }
 
                 if (is_snake(current_point))
                 {
                     g.setColor(Color.GREEN);
-                    g.fillRect(x * game_unit, y * game_unit, game_unit, game_unit);
+                    g.fillRect(x * game_unit, y * game_unit, game_unit - 2, game_unit - 2);
                     continue;
                 }
 
@@ -216,6 +221,19 @@ public class SnakeGamePanel extends JPanel implements ActionListener
         g.drawString("APPLES EATEN: " + apples_eaten, (screen_width - metrics2.stringWidth("SCORE: "+ screen_height)) / 2, g.getFont().getSize());
 
         button.setVisible(true);
+
+        if (leaderboard != null)
+            return;
+
+        String game_scale_as_string = "";
+        switch (game_scale)
+        {
+            case 6 -> game_scale_as_string = "6x6";
+            case 10 -> game_scale_as_string = "10x10";
+            case 16 -> game_scale_as_string = "16x16";
+        }
+        Leaderboard.write_to_leaderboard(new LeaderboardEntry(apples_eaten, username, game_scale_as_string));
+        leaderboard = new Leaderboard((JFrame) this.getParent().getParent().getParent(), game_scale_as_string);
     }
 
     private void game_win(Graphics g)
@@ -231,6 +249,19 @@ public class SnakeGamePanel extends JPanel implements ActionListener
         g.drawString("APPLES EATEN: " + apples_eaten, (screen_width - metrics2.stringWidth("SCORE: "+ screen_height)) / 2, g.getFont().getSize());
 
         button.setVisible(true);
+
+        if (leaderboard != null)
+            return;
+
+        String game_scale_as_string = "";
+        switch (game_scale)
+        {
+            case 6 -> game_scale_as_string = "6x6";
+            case 10 -> game_scale_as_string = "10x10";
+            case 16 -> game_scale_as_string = "16x16";
+        }
+        Leaderboard.write_to_leaderboard(new LeaderboardEntry(apples_eaten, username, game_scale_as_string));
+        leaderboard = new Leaderboard((JFrame) this.getParent().getParent().getParent(), game_scale_as_string);
     }
 
     private boolean is_snake(Point point)
