@@ -206,7 +206,19 @@ public class SnakeGamePanel extends JPanel implements ActionListener
             }
 
             if (snake_point.equals(snake.getFirst()))
+            {
                 game_running = false;
+                try (AudioInputStream audio_stream = AudioSystem.getAudioInputStream(new File("pipe.wav")))
+                {
+                    var clip = AudioSystem.getClip();
+                    clip.open(audio_stream);
+                    clip.start();
+                }
+                catch (Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+            }
         }
     }
 
@@ -215,7 +227,19 @@ public class SnakeGamePanel extends JPanel implements ActionListener
         Point snake_head = snake.getFirst();
         if (snake_head.x >= game_scale || snake_head.x < 0 ||
                 snake_head.y >= game_scale || snake_head.y < 0)
+        {
             game_running = false;
+            try (AudioInputStream audio_stream = AudioSystem.getAudioInputStream(new File("pipe.wav")))
+            {
+                var clip = AudioSystem.getClip();
+                clip.open(audio_stream);
+                clip.start();
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private boolean check_if_game_win()
