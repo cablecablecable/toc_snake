@@ -1,9 +1,12 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -171,9 +174,21 @@ public class SnakeGamePanel extends JPanel implements ActionListener
         {
             if (apples.get(i).equals(snake.getFirst()))
             {
+                try (AudioInputStream audio_stream = AudioSystem.getAudioInputStream(new File("chomp.wav")))
+                {
+                    var clip = AudioSystem.getClip();
+                    clip.open(audio_stream);
+                    clip.start();
+                }
+                catch (Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+
                 snake.addLast(old_snake_tail);
                 apples.remove(i);
                 apples_eaten++;
+
                 return;
             }
         }
